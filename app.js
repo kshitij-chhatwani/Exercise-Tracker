@@ -6,6 +6,7 @@ import cors from 'cors';
 var app = Express();
 var indexRouter = require('./routes/index');
 var exerciseRouter = require('./routes/exerciseRoutes');
+var authUser = require('./routes/userAuth');
 
 //Setting Default mongoose connection.
 var mongoDB = 'mongodb://localhost:27017/my_database';
@@ -17,17 +18,13 @@ db.on('error', console.error.bind(console, 'MongoDB connection error:'));
 //Middleware 
 app.use(bodyParser.urlencoded({extended:true}));
 app.use(bodyParser.json());
-// app.use(cors());
-app.options('*', cors())
-// app.use( function( req,res,next){
-//     res.header("Access-Control-Allow-Origin", "http://localhost:5000/");
-//     res.header("Access-Control-Allow-Headers", "X-Requested-With, Content-Type");
-//     res.setHeader('Access-Control-Allow-Credentials', true);
-//     next();
-// })
+app.use(cors());
+app.options('*', cors());
 
+//Routes
 app.use('/api',indexRouter);
 app.use('/api/exercise',exerciseRouter);
+app.use('/exercise-tracker',authUser);
 
 //catch 400
 app.use((err, request,response,next) => {
